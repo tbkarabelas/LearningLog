@@ -1,6 +1,11 @@
+"""End of project ideas, add streak for when you have a streak for your logs
+    showing your progress through out the course, log what you learned and imporveed that day
+
+"""
+
 from django.shortcuts import render, redirect
 
-from .models import Topic
+from .models import Topic, Entry
 from .forms import TopicForm, EntryForm
 
 def index(request):
@@ -37,7 +42,7 @@ def new_entry(request, topic_id):
     """Add a new entry for a topic"""
     topic = Topic.objects.get(id=topic_id)
 
-    if request.meth != 'POST':
+    if request.method != 'POST':
         # no data submitted; create a blank form
         form = EntryForm()
     else:
@@ -51,3 +56,21 @@ def new_entry(request, topic_id):
     
     context = {'topic': topic, 'form': form}
     return render(request, 'learning_logs/new_entry.html', context)
+
+def edit_entry(request, entry_id):
+    """edit an existing entry"""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+
+    if request.method != 'POST':
+        # pre-fill with exisitng entry
+        form = EntryForm(instance=entry)
+    else:
+        # POST data submitted; process data
+        form = EntryForm(instance=entry, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('learning_logs:topic', topic_id=topic.id)
+    
+    context = {'entry': entry, 'topic': topic, 'form': form}
+    return render(request, 'learning_logs/edit_entry.html', context)
