@@ -1,17 +1,25 @@
 {% extends 'learning_logs/base.html' %}
 
+{% block page_header %}
+    <h2>{{ user.username }}'s Habits</h2>
+{% endblock page_header %}
+
 {% block content %}
 
-<p>Topics</p>
 
-<ul>
-    {% for topic in topics %}
-        <li>
-            <a href="{% url 'learning_logs:topic' topic.id %}"> {{ topic.text }}</a>
-        </li>
+<ul class="list-group border-bottom pb-2 mb-4">
+    {%  for topic in topics %}
+    <li class="list-group-item border-0">
+        <a href="{% url 'learning_logs:topic' topic.id %}">
+            {{ topic.text }}
+        </a>
+
+    </li>
     {% empty %}
-        <li> No topics have been added yet.</li>
-    {% endfor %}   
+        <li class="list-group-item border-0">No Habits Yet</li>
+    {% endfor %}
+
 </ul>
-<a href="{% url 'learning_logs:new_topic' %}">Add a new Topic</a>
+<a href="{% url 'learning_logs:new_topic' %}">Add a New Habit</a>
+
 {% endblock content %}
